@@ -52,7 +52,7 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
       {isMenuOpen && (
         <div
           onClick={() => setIsMenuOpen(false)}
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
+          className="fixed inset-0 bg-black/20 z-30"
         ></div>
       )}
 
