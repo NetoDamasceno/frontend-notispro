@@ -1,5 +1,18 @@
 import { useState } from "react";
-import { Menu, X, User } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  Star,
+  Folder,
+  Wrench,
+  BarChart3,
+  Search,
+  FileText,
+  FolderOpen,
+  ShieldCheck,
+  Settings,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ title = "Página", userName = "Usuário" }) {
@@ -48,40 +61,28 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
         className={`fixed left-0 w-full backdrop-blur-md bg-white/60 shadow-lg p-6 z-40 rounded-b-xl transition-transform duration-300 ${
           isMenuOpen ? "translate-y-16" : "-translate-y-full"
         }`}
-        style={{ WebkitOverflowScrolling: "touch" }} // melhora scroll no iOS
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         <nav
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-9 gap-6 text-base
-  max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain pr-3 pb-10"
+          max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain pr-3 pb-10"
         >
           {/* COLUNA 1 - FAVORITOS */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              ⭐ Favoritos
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <Star size={18} /> Favoritos
             </h4>
             <ul className="space-y-2">
-              <li
-                className="cursor-pointer hover:underline"
-                onClick={() => goTo("/importar-planilhas")}
-              >
+              <li className="cursor-pointer hover:underline" onClick={() => goTo("/importar-planilhas")}>
                 Importar Planilhas
               </li>
-              <li
-                className="cursor-pointer hover:underline"
-                onClick={() => goTo("/apontamentos")}
-              >
+              <li className="cursor-pointer hover:underline" onClick={() => goTo("/apontamentos")}>
                 Apontamentos
               </li>
-              <li
-                className="cursor-pointer hover:underline"
-                onClick={() => goTo("/entregador")}
-              >
+              <li className="cursor-pointer hover:underline" onClick={() => goTo("/entregador")}>
                 Entregador
               </li>
-              <li
-                className="cursor-pointer hover:underline"
-                onClick={() => goTo("/configuracoes")}
-              >
+              <li className="cursor-pointer hover:underline" onClick={() => goTo("/configuracoes")}>
                 Configurações
               </li>
             </ul>
@@ -89,8 +90,8 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
 
           {/* COLUNA 2 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              📁 Gerência de Projetos
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <Folder size={18} /> Gerência de Projetos
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Boards</li>
@@ -102,8 +103,8 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
 
           {/* COLUNA 3 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              🔧 Utilitários
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <Wrench size={18} /> Utilitários
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Importar Dados</li>
@@ -114,8 +115,8 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
 
           {/* COLUNA 4 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              📊 Gráficos
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <BarChart3 size={18} /> Gráficos
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Resumo de Entregas</li>
@@ -126,8 +127,8 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
 
           {/* COLUNA 5 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              🔍 Consultas
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <Search size={18} /> Consultas
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Histórico</li>
@@ -136,10 +137,10 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
             </ul>
           </div>
 
-          {/* NOVA COLUNA 6 */}
+          {/* COLUNA 6 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              📄 Relatórios
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <FileText size={18} /> Relatórios
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Mensais</li>
@@ -148,10 +149,10 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
             </ul>
           </div>
 
-          {/* NOVA COLUNA 7 */}
+          {/* COLUNA 7 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              📂 Documentos
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <FolderOpen size={18} /> Documentos
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Arquivos</li>
@@ -160,10 +161,10 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
             </ul>
           </div>
 
-          {/* NOVA COLUNA 8 */}
+          {/* COLUNA 8 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              🔐 Controle de Acessos
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <ShieldCheck size={18} /> Controle de Acessos
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Perfis</li>
@@ -172,10 +173,10 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
             </ul>
           </div>
 
-          {/* NOVA COLUNA 9 */}
+          {/* COLUNA 9 */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1">
-              ⚙️ Parametrizações
+            <h4 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex items-center gap-2">
+              <Settings size={18} /> Parametrizações
             </h4>
             <ul className="space-y-2 text-gray-600">
               <li>Configurações Gerais</li>
