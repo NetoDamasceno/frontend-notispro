@@ -114,7 +114,12 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
               <Folder size={18} /> Gerência de Projetos
             </h4>
             <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-              <li>Boards</li>
+              <li
+                className="cursor-pointer hover:underline text-black dark:text-gray-200"
+                onClick={() => goTo("/dashboard")}
+              >
+                Dashboard
+              </li>
               <li>Atividades</li>
               <li>Planejamento</li>
               <li>Documentos</li>
