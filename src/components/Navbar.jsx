@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Menu,
   X,
@@ -15,9 +15,16 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar({ title = "Página", userName = "Usuário" }) {
+export default function Navbar({ title = "Página" }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [username, setUsername] = useState("Usuário");
   const navigate = useNavigate();
+
+  // 🔥 Busca automática no localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) setUsername(storedUser);
+  }, []);
 
   const goTo = (path) => {
     navigate(path);
@@ -49,7 +56,7 @@ export default function Navbar({ title = "Página", userName = "Usuário" }) {
         {/* PERFIL */}
         <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
           <User size={22} />
-          <span className="font-medium text-sm">{userName}</span>
+          <span className="font-medium text-sm">{username}</span>
         </div>
       </header>
 

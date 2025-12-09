@@ -1,8 +1,10 @@
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 🟢 IMPORTANTE
 
 export default function Configuracoes() {
   const [temaEscuro, setTemaEscuro] = useState(false);
+  const navigate = useNavigate(); // 🟢 para redirecionar
 
   // ✅ Ao abrir a tela, lê tema salvo
   useEffect(() => {
@@ -25,6 +27,19 @@ export default function Configuracoes() {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
+  };
+
+  // 🟢 FUNÇÃO DE SAIR DA CONTA
+  const sairDaConta = () => {
+    const confirmar = confirm("Deseja realmente sair da conta?");
+
+    if (!confirmar) return;
+
+    // Limpa dados do usuário
+    localStorage.removeItem("username");
+
+    // Redireciona para tela de Login
+    navigate("/");
   };
 
   return (
@@ -59,7 +74,11 @@ export default function Configuracoes() {
             Email: <strong>usuario@email.com</strong>
           </p>
 
-          <button className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+          {/* 🟥 BOTÃO SAIR FUNCIONAL */}
+          <button
+            onClick={sairDaConta}
+            className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+          >
             Sair da Conta
           </button>
         </div>
