@@ -104,14 +104,14 @@ export default function Apontamentos() {
       <div className="pt-20 px-4">
         {/* Upload */}
         <div className="mb-6">
-          <label className="font-semibold block mb-1">
+          <label className="font-semibold block mb-1 dark:text-white">
             📁 Importar planilha
           </label>
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
             onChange={handleFileUpload}
-            className="border p-2 rounded w-full cursor-pointer"
+            className="border p-2 rounded w-full cursor-pointer dark:text-white"
           />
         </div>
 

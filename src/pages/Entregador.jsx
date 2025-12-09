@@ -45,7 +45,7 @@ export default function Entregador() {
       <div className="pt-20 px-4 max-w-2xl mx-auto">
 
         {/* Formulário */}
-        <h2 className="text-xl font-bold mb-3">Cadastrar novo entregador</h2>
+        <h2 className="text-xl font-bold mb-3 dark:text-white">Cadastrar novo entregador</h2>
 
         <form onSubmit={handleSubmit} className="border rounded p-4 mb-8 bg-white shadow-sm">
           <div className="flex flex-col gap-3">
@@ -82,10 +82,10 @@ export default function Entregador() {
         </form>
 
         {/* Listagem */}
-        <h2 className="text-xl font-bold mb-2">Entregadores cadastrados</h2>
+        <h2 className="text-xl font-bold mb-2 dark:text-white">Entregadores cadastrados</h2>
 
         {entregadores.length === 0 && (
-          <p className="text-gray-500">Nenhum entregador cadastrado ainda.</p>
+          <p className="text-gray-500 dark:text-gray-400">Nenhum entregador cadastrado ainda.</p>
         )}
 
         {entregadores.length > 0 && (

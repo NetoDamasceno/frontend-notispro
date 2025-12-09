@@ -47,7 +47,7 @@ export default function Login() {
           p-6 rounded-lg md:p-0 shadow-md md:shadow-none
           "
         >
-          <h2 className="text-2xl font-semibold text-center">Login</h2>
+          <h2 className="text-2xl font-semibold text-center dark:text-white">Login</h2>
 
           <input
             type="text"

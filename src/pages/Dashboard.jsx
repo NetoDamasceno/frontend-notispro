@@ -23,8 +23,8 @@ export default function Dashboard() {
       <main className="p-6 pt-20 space-y-6 overflow-y-auto max-h-[calc(100vh-64px)]">
         {/* TÍTULO */}
         <div>
-          <h1 className="text-2xl font-semibold">Olá, {username}</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl font-semibold dark:text-white">Olá, {username}</h1>
+          <p className="text-gray-600 mt-1 dark:text-gray-200">
             Aqui está o resumo das atividades recentes do cartório.
           </p>
         </div>

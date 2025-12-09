@@ -70,21 +70,21 @@ export default function ImportarPlanilhas() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
       <Navbar title="Importar Planilhas" />
 
-      {/* Conteúdo */}
       <main className="pt-24 px-6 max-w-2xl mx-auto">
-        
-        {/* Upload */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-          <h2 className="text-lg font-semibold mb-3">Enviar nova planilha</h2>
-          
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6">
+          <h2 className="text-lg font-semibold mb-3 text-black dark:text-white">
+            Enviar nova planilha
+          </h2>
+
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
             onChange={(e) => setSelectedFile(e.target.files[0])}
-            className="border p-2 rounded-md w-full"
+            className="border p-2 rounded-md w-full bg-white dark:bg-gray-700 
+                   text-black dark:text-white border-gray-300 dark:border-gray-600"
           />
 
           <button
@@ -92,7 +92,7 @@ export default function ImportarPlanilhas() {
             disabled={loading}
             className={`mt-3 w-full py-2 rounded-lg font-medium transition ${
               loading
-                ? "bg-gray-300 cursor-not-allowed"
+                ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
             }`}
           >
@@ -100,19 +100,19 @@ export default function ImportarPlanilhas() {
           </button>
         </div>
 
-        
-        {/* Lista de planilhas */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Planilhas Ativas</h2>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md transition-colors">
+          <h2 className="text-lg font-semibold mb-4 text-black dark:text-white">
+            Planilhas Ativas
+          </h2>
 
           {planilhas.length === 0 ? (
-            <p className="text-gray-600 text-center py-4">
+            <p className="text-gray-700 dark:text-gray-300 text-center py-4">
               Nenhuma planilha encontrada.
             </p>
           ) : (
-            <table className="w-full text-sm border-collapse">
+            <table className="w-full text-sm border-collapse text-black dark:text-white">
               <thead>
-                <tr className="border-b">
+                <tr className="border-b border-gray-300 dark:border-gray-700">
                   <th className="text-left py-2">Arquivo</th>
                   <th className="text-center">Qtd</th>
                   <th className="text-center w-28">Ação</th>
@@ -121,7 +121,11 @@ export default function ImportarPlanilhas() {
 
               <tbody>
                 {planilhas.map((p, i) => (
-                  <tr key={i} className="border-b hover:bg-gray-100">
+                  <tr
+                    key={i}
+                    className="border-b border-gray-300 dark:border-gray-700 
+                           hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
                     <td className="py-2">{p.planilha}</td>
                     <td className="text-center font-medium">
                       {String(p.quantidade || 0).padStart(2, "0")}
@@ -140,7 +144,6 @@ export default function ImportarPlanilhas() {
             </table>
           )}
         </div>
-
       </main>
     </div>
   );
