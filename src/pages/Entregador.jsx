@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
 export default function Entregador() {
@@ -10,25 +10,37 @@ export default function Entregador() {
 
   const [editId, setEditId] = useState(null);
 
-  // 🔥 Modal de remoção moderno
   const [modalRemoverId, setModalRemoverId] = useState(null);
 
-  // --- REGEX PROFISSIONAIS ---
+  const [busca, setBusca] = useState("");
+  const [filtroVeiculo, setFiltroVeiculo] = useState("");
+
   const nomeRegex = /^[A-Za-zÀ-ÿ]{2,}( [A-Za-zÀ-ÿ]{2,})+$/;
   const telefoneRegex = /^\(?\d{2}\)? ?9?\d{4}-?\d{4}$/;
 
   const generateId = () => Date.now();
 
+  useEffect(() => {
+    const data = localStorage.getItem("entregadores");
+    if (data) {
+      setEntregadores(JSON.parse(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("entregadores", JSON.stringify(entregadores));
+  }, [entregadores]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!nomeRegex.test(nome.trim())) {
-      alert("Digite um nome completo válido (Nome e Sobrenome, sem números).");
+      alert("Digite um nome completo válido.");
       return;
     }
 
     if (!telefoneRegex.test(telefone.trim())) {
-      alert("Digite um telefone válido. Ex: (11) 98765-4321");
+      alert("Digite um telefone válido.");
       return;
     }
 
@@ -45,13 +57,7 @@ export default function Entregador() {
       );
       setEditId(null);
     } else {
-      const novo = {
-        id: generateId(),
-        nome,
-        telefone,
-        veiculo,
-      };
-
+      const novo = { id: generateId(), nome, telefone, veiculo };
       setEntregadores((prev) => [...prev, novo]);
     }
 
@@ -60,12 +66,10 @@ export default function Entregador() {
     setVeiculo("");
   };
 
-  // 🔥 ABRIR modal de remoção
   const abrirModalRemover = (id) => {
     setModalRemoverId(id);
   };
 
-  // 🔥 CONFIRMAR remoção
   const confirmarRemocao = () => {
     setEntregadores((prev) =>
       prev.filter((item) => item.id !== modalRemoverId)
@@ -73,7 +77,6 @@ export default function Entregador() {
     setModalRemoverId(null);
   };
 
-  // 🔥 CANCELAR remoção
   const cancelarRemocao = () => {
     setModalRemoverId(null);
   };
@@ -92,9 +95,32 @@ export default function Entregador() {
     setVeiculo("");
   };
 
+  const entregadoresFiltrados = entregadores.filter((item) => {
+    const texto = (item.nome + item.telefone + item.veiculo).toLowerCase();
+    const buscaMatch = texto.includes(busca.toLowerCase());
+
+    const veiculoMatch =
+      filtroVeiculo === "" ? true : item.veiculo === filtroVeiculo;
+
+    return buscaMatch && veiculoMatch;
+  });
+
   return (
     <>
       <Navbar title="Entregadores" />
+
+      {/* SOMENTE destaques de fundo da linha sendo editada */}
+      <style>{`
+        .edit-highlight {
+          background-color: #fff6b3 !important;
+          transition: background-color 0.3s ease-in-out;
+        }
+
+        .dark .edit-highlight {
+          background-color: rgba(248, 215, 118, 0.459) !important;
+        }
+
+      `}</style>
 
       <div className="pt-20 px-4 max-w-2xl mx-auto">
         <h2 className="text-xl font-bold mb-3 dark:text-white">
@@ -116,7 +142,7 @@ export default function Entregador() {
 
             <input
               type="text"
-              placeholder="Telefone (ex: 11 98765-4321)"
+              placeholder="Telefone"
               className="border p-2 rounded dark:bg-gray-800 dark:border-gray-700"
               value={telefone}
               onChange={(e) => setTelefone(e.target.value)}
@@ -160,49 +186,61 @@ export default function Entregador() {
           </div>
         </form>
 
+        <div className="flex flex-col md:flex-row gap-3 mb-4">
+          <input
+            type="text"
+            placeholder="Buscar entregador..."
+            className="border p-2 rounded dark:bg-gray-800 dark:border-gray-700 dark:text-white flex-1"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+
+          <select
+            className="border p-2 rounded dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+            value={filtroVeiculo}
+            onChange={(e) => setFiltroVeiculo(e.target.value)}
+          >
+            <option value="">Todos veículos</option>
+            <option value="Moto">Moto</option>
+            <option value="Bicicleta">Bicicleta</option>
+          </select>
+        </div>
+
         <h2 className="text-xl font-bold mb-2 dark:text-white">
           Entregadores cadastrados
         </h2>
 
-        {entregadores.length === 0 && (
+        {entregadoresFiltrados.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400">
-            Nenhum entregador cadastrado ainda.
+            Nenhum entregador encontrado.
           </p>
         )}
 
-        {entregadores.length > 0 && (
+        {entregadoresFiltrados.length > 0 && (
           <div className="overflow-auto border rounded">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100 dark:bg-gray-800 dark:text-white">
                 <tr>
-                  <th className="border px-3 py-2 text-left font-semibold">
-                    ID
-                  </th>
-                  <th className="border px-3 py-2 text-left font-semibold">
-                    Nome
-                  </th>
-                  <th className="border px-3 py-2 text-left font-semibold">
-                    Telefone
-                  </th>
-                  <th className="border px-3 py-2 text-left font-semibold">
-                    Veículo
-                  </th>
-                  <th className="border px-3 py-2 text-center font-semibold">
-                    Ações
-                  </th>
+                  <th className="border px-3 py-2">ID</th>
+                  <th className="border px-3 py-2">Nome</th>
+                  <th className="border px-3 py-2">Telefone</th>
+                  <th className="border px-3 py-2">Veículo</th>
+                  <th className="border px-3 py-2 text-center">Ações</th>
                 </tr>
               </thead>
 
               <tbody>
-                {entregadores.map((item) => (
+                {entregadoresFiltrados.map((item) => (
                   <tr
                     key={item.id}
-                    className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 dark:text-white"
+                    className={`
+                      odd:bg-white even:bg-gray-50 
+                      dark:odd:bg-gray-900 dark:even:bg-gray-800 dark:text-white
+                      ${editId === item.id ? "edit-highlight" : ""}
+                    `}
                   >
                     <td className="border px-2 py-1">{item.id}</td>
-                    <td className="border px-2 py-1 font-medium">
-                      {item.nome}
-                    </td>
+                    <td className="border px-2 py-1">{item.nome}</td>
                     <td className="border px-2 py-1">{item.telefone}</td>
                     <td className="border px-2 py-1">{item.veiculo}</td>
                     <td className="border text-center px-2 py-1 space-x-2">
@@ -228,7 +266,6 @@ export default function Entregador() {
         )}
       </div>
 
-      {/* 🔥 MODAL DE REMOVER */}
       {modalRemoverId !== null && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50"
@@ -237,7 +274,6 @@ export default function Entregador() {
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 shadow-xl rounded-lg p-4 w-72 animate-[scale_120ms_ease-out]"
-            style={{ animationName: "modalScale" }}
           >
             <h3 className="text-lg font-semibold mb-2 dark:text-white">
               Remover entregador?
@@ -262,14 +298,6 @@ export default function Entregador() {
               </button>
             </div>
           </div>
-
-          {/* 🔥 animação inline */}
-          <style>{`
-            @keyframes modalScale {
-              0% { transform: scale(0.98); opacity: 0; }
-              100% { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
         </div>
       )}
     </>
