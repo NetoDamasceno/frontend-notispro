@@ -8,7 +8,10 @@ export default function Entregador() {
 
   const [entregadores, setEntregadores] = useState([]);
 
-  const [editId, setEditId] = useState(null); // 🔥 controla modo edição
+  const [editId, setEditId] = useState(null);
+
+  // 🔥 Modal de remoção moderno
+  const [modalRemoverId, setModalRemoverId] = useState(null);
 
   // --- REGEX PROFISSIONAIS ---
   const nomeRegex = /^[A-Za-zÀ-ÿ]{2,}( [A-Za-zÀ-ÿ]{2,})+$/;
@@ -35,16 +38,13 @@ export default function Entregador() {
     }
 
     if (editId) {
-      // 🔥 ATUALIZAR entregador existente
       setEntregadores((prev) =>
         prev.map((item) =>
           item.id === editId ? { ...item, nome, telefone, veiculo } : item
         )
       );
-
       setEditId(null);
     } else {
-      // 🔥 ADICIONAR novo entregador
       const novo = {
         id: generateId(),
         nome,
@@ -55,19 +55,29 @@ export default function Entregador() {
       setEntregadores((prev) => [...prev, novo]);
     }
 
-    // Reset form
     setNome("");
     setTelefone("");
     setVeiculo("");
   };
 
-  const remover = (id) => {
-    if (confirm("Deseja remover este entregador?")) {
-      setEntregadores((prev) => prev.filter((item) => item.id !== id));
-    }
+  // 🔥 ABRIR modal de remoção
+  const abrirModalRemover = (id) => {
+    setModalRemoverId(id);
   };
 
-  // 🔥 Função para editar
+  // 🔥 CONFIRMAR remoção
+  const confirmarRemocao = () => {
+    setEntregadores((prev) =>
+      prev.filter((item) => item.id !== modalRemoverId)
+    );
+    setModalRemoverId(null);
+  };
+
+  // 🔥 CANCELAR remoção
+  const cancelarRemocao = () => {
+    setModalRemoverId(null);
+  };
+
   const editar = (item) => {
     setEditId(item.id);
     setNome(item.nome);
@@ -75,7 +85,6 @@ export default function Entregador() {
     setVeiculo(item.veiculo);
   };
 
-  // 🔥 Função para cancelar edição
   const cancelarEdicao = () => {
     setEditId(null);
     setNome("");
@@ -123,7 +132,6 @@ export default function Entregador() {
               <option value="Bicicleta">Bicicleta</option>
             </select>
 
-            {/* 🔥 BOTÕES ATUALIZADOS */}
             {editId ? (
               <div className="flex gap-3">
                 <button
@@ -198,7 +206,6 @@ export default function Entregador() {
                     <td className="border px-2 py-1">{item.telefone}</td>
                     <td className="border px-2 py-1">{item.veiculo}</td>
                     <td className="border text-center px-2 py-1 space-x-2">
-                      {/* 🔵 EDITAR */}
                       <button
                         onClick={() => editar(item)}
                         className="bg-yellow-500 text-white px-3 py-1 rounded text-xs"
@@ -206,9 +213,8 @@ export default function Entregador() {
                         Editar
                       </button>
 
-                      {/* 🔴 REMOVER */}
                       <button
-                        onClick={() => remover(item.id)}
+                        onClick={() => abrirModalRemover(item.id)}
                         className="bg-red-600 text-white px-3 py-1 rounded text-xs"
                       >
                         Remover
@@ -221,6 +227,51 @@ export default function Entregador() {
           </div>
         )}
       </div>
+
+      {/* 🔥 MODAL DE REMOVER */}
+      {modalRemoverId !== null && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          onClick={cancelarRemocao}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 shadow-xl rounded-lg p-4 w-72 animate-[scale_120ms_ease-out]"
+            style={{ animationName: "modalScale" }}
+          >
+            <h3 className="text-lg font-semibold mb-2 dark:text-white">
+              Remover entregador?
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              Esta ação não pode ser desfeita.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelarRemocao}
+                className="px-3 py-1 rounded border border-gray-400 dark:border-gray-600 dark:text-white"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={confirmarRemocao}
+                className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Remover
+              </button>
+            </div>
+          </div>
+
+          {/* 🔥 animação inline */}
+          <style>{`
+            @keyframes modalScale {
+              0% { transform: scale(0.98); opacity: 0; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
     </>
   );
 }
