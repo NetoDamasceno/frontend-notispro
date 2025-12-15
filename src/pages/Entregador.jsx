@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Pencil, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 export default function Entregador() {
@@ -7,9 +8,7 @@ export default function Entregador() {
   const [veiculo, setVeiculo] = useState("");
 
   const [entregadores, setEntregadores] = useState([]);
-
   const [editId, setEditId] = useState(null);
-
   const [modalRemoverId, setModalRemoverId] = useState(null);
 
   const [busca, setBusca] = useState("");
@@ -22,9 +21,7 @@ export default function Entregador() {
 
   useEffect(() => {
     const data = localStorage.getItem("entregadores");
-    if (data) {
-      setEntregadores(JSON.parse(data));
-    }
+    if (data) setEntregadores(JSON.parse(data));
   }, []);
 
   useEffect(() => {
@@ -66,6 +63,20 @@ export default function Entregador() {
     setVeiculo("");
   };
 
+  const editar = (item) => {
+    setEditId(item.id);
+    setNome(item.nome);
+    setTelefone(item.telefone);
+    setVeiculo(item.veiculo);
+  };
+
+  const cancelarEdicao = () => {
+    setEditId(null);
+    setNome("");
+    setTelefone("");
+    setVeiculo("");
+  };
+
   const abrirModalRemover = (id) => {
     setModalRemoverId(id);
   };
@@ -81,27 +92,11 @@ export default function Entregador() {
     setModalRemoverId(null);
   };
 
-  const editar = (item) => {
-    setEditId(item.id);
-    setNome(item.nome);
-    setTelefone(item.telefone);
-    setVeiculo(item.veiculo);
-  };
-
-  const cancelarEdicao = () => {
-    setEditId(null);
-    setNome("");
-    setTelefone("");
-    setVeiculo("");
-  };
-
   const entregadoresFiltrados = entregadores.filter((item) => {
     const texto = (item.nome + item.telefone + item.veiculo).toLowerCase();
     const buscaMatch = texto.includes(busca.toLowerCase());
-
     const veiculoMatch =
       filtroVeiculo === "" ? true : item.veiculo === filtroVeiculo;
-
     return buscaMatch && veiculoMatch;
   });
 
@@ -109,7 +104,6 @@ export default function Entregador() {
     <>
       <Navbar title="Entregadores" />
 
-      {/* SOMENTE destaques de fundo da linha sendo editada */}
       <style>{`
         .edit-highlight {
           background-color: #fff6b3 !important;
@@ -117,9 +111,8 @@ export default function Entregador() {
         }
 
         .dark .edit-highlight {
-          background-color: rgba(248, 215, 118, 0.459) !important;
+          background-color: rgba(248, 215, 118, 0.45) !important;
         }
-
       `}</style>
 
       <div className="pt-20 px-4 max-w-2xl mx-auto">
@@ -127,6 +120,7 @@ export default function Entregador() {
           {editId ? "Editar entregador" : "Cadastrar novo entregador"}
         </h2>
 
+        {/* FORMULÁRIO */}
         <form
           onSubmit={handleSubmit}
           className="border rounded p-4 mb-8 bg-white shadow-sm dark:bg-gray-900 dark:text-white"
@@ -186,6 +180,7 @@ export default function Entregador() {
           </div>
         </form>
 
+        {/* BUSCA / FILTRO */}
         <div className="flex flex-col md:flex-row gap-3 mb-4">
           <input
             type="text"
@@ -234,7 +229,7 @@ export default function Entregador() {
                   <tr
                     key={item.id}
                     className={`
-                      odd:bg-white even:bg-gray-50 
+                      odd:bg-white even:bg-gray-50
                       dark:odd:bg-gray-900 dark:even:bg-gray-800 dark:text-white
                       ${editId === item.id ? "edit-highlight" : ""}
                     `}
@@ -243,20 +238,26 @@ export default function Entregador() {
                     <td className="border px-2 py-1">{item.nome}</td>
                     <td className="border px-2 py-1">{item.telefone}</td>
                     <td className="border px-2 py-1">{item.veiculo}</td>
-                    <td className="border text-center px-2 py-1 space-x-2">
-                      <button
-                        onClick={() => editar(item)}
-                        className="bg-yellow-500 text-white px-3 py-1 rounded text-xs"
-                      >
-                        Editar
-                      </button>
 
-                      <button
-                        onClick={() => abrirModalRemover(item.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded text-xs"
-                      >
-                        Remover
-                      </button>
+                    {/* AÇÕES COM ÍCONES */}
+                    <td className="border px-2 py-1">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => editar(item)}
+                          className="p-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition"
+                          title="Editar"
+                        >
+                          <Pencil size={16} />
+                        </button>
+
+                        <button
+                          onClick={() => abrirModalRemover(item.id)}
+                          className="p-2 rounded bg-red-600 hover:bg-red-700 text-white transition"
+                          title="Remover"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -266,6 +267,7 @@ export default function Entregador() {
         )}
       </div>
 
+      {/* MODAL DE REMOÇÃO */}
       {modalRemoverId !== null && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50"

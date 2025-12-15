@@ -12,15 +12,19 @@ import {
   FolderOpen,
   ShieldCheck,
   Settings,
+  LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import LogoutModal from "./LogoutModal";
 
 export default function Navbar({ title = "Página" }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [username, setUsername] = useState("Usuário");
+  const [perfilOpen, setPerfilOpen] = useState(false);
+  const [mostrarModalSair, setMostrarModalSair] = useState(false);
+
   const navigate = useNavigate();
 
-  // 🔥 Busca automática no localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("username");
     if (storedUser) setUsername(storedUser);
@@ -33,17 +37,17 @@ export default function Navbar({ title = "Página" }) {
 
   return (
     <>
-      {/* HEADER FIXO */}
+      {/* HEADER */}
       <header
         className="h-16 flex items-center justify-between px-6 shadow-md 
-            bg-white dark:bg-gray-900 
-            text-black dark:text-white 
-            fixed top-0 left-0 w-full z-50 transition-colors"
+        bg-white dark:bg-gray-900 
+        text-black dark:text-white 
+        fixed top-0 left-0 w-full z-50 transition-colors"
       >
         <div className="flex items-center">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`transition-all duration-300 p-2 rounded-full hover:scale-110 active:scale-95 ${
+            className={`transition-all duration-300 p-2 rounded-full hover:scale-110 ${
               isMenuOpen ? "rotate-180" : ""
             }`}
           >
@@ -54,18 +58,45 @@ export default function Navbar({ title = "Página" }) {
         </div>
 
         {/* PERFIL */}
-        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
-          <User size={22} />
-          <span className="font-medium text-sm">{username}</span>
+        <div className="relative">
+          <div
+            onClick={() => setPerfilOpen(!perfilOpen)}
+            className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
+          >
+            <User size={22} />
+            <span className="font-medium text-sm">{username}</span>
+          </div>
+
+          {perfilOpen && (
+            <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 overflow-hidden">
+              <button
+                onClick={() => {
+                  setPerfilOpen(false);
+                  setMostrarModalSair(true);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm 
+                hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              >
+                <LogOut size={16} className="text-red-600" />
+                <span className="text-red-600 font-medium">Sair da conta</span>
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* OVERLAY */}
+      {/* MODAL DE LOGOUT */}
+      <LogoutModal
+        open={mostrarModalSair}
+        onClose={() => setMostrarModalSair(false)}
+      />
+
+      {/* OVERLAY MENU */}
       {isMenuOpen && (
         <div
           onClick={() => setIsMenuOpen(false)}
           className="fixed inset-0 bg-black/20 z-30"
-        ></div>
+        />
       )}
 
       {/* MENU DROPDOWN EM COLUNAS */}
