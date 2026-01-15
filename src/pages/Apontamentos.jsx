@@ -6,35 +6,46 @@ export default function Apontamentos() {
   const [filterText, setFilterText] = useState("");
   const [filteredCode, setFilteredCode] = useState("");
   const [apontamentos, setApontamentos] = useState([]);
-  const [lockedSheets, setLockedSheets] = useState([]);
 
-  // Atualiza status com validação
+  const todayISO = () => new Date().toISOString().split("T")[0];
+  const todayBR = () => new Date().toLocaleDateString("pt-BR");
+
+  // 🔄 Atualiza status com regras de negócio
   const updateStatus = (id, newStatus) => {
     setApontamentos((prev) =>
       prev.map((item) => {
         if (item.id !== id) return item;
 
-        if (newStatus !== "Pendente" && !item.entregador.trim()) {
-          alert("Preencha o campo Entregador antes de alterar o status.");
-          return item;
-        }
+        if (newStatus !== "Pendente") {
+          if (!item.entregador) {
+            alert("Preencha o entregador antes de alterar o status.");
+            return item;
+          }
 
-        const today = new Date().toLocaleDateString("pt-BR");
+          if (!item.dataEF) {
+            alert("Preencha a Data EF/VT antes de alterar o status.");
+            return item;
+          }
+
+          if (item.dataEF < item.coleta) {
+            alert("Data EF/VT não pode ser menor que a data de Coleta.");
+            return item;
+          }
+        }
 
         return {
           ...item,
           status: newStatus,
-          coleta: item.coleta || today,
-          devNotis: newStatus !== "Pendente" ? today : "",
+          devNotis: newStatus !== "Pendente" ? todayISO() : "",
         };
       })
     );
   };
 
-  const handleEntregador = (id, value) => {
+  const handleChange = (id, field, value) => {
     setApontamentos((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, entregador: value } : item
+        item.id === id ? { ...item, [field]: value } : item
       )
     );
   };
@@ -54,7 +65,7 @@ export default function Apontamentos() {
       : true
   );
 
-  // Upload & leitura da planilha
+  // 📥 Upload da planilha
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -66,7 +77,6 @@ export default function Apontamentos() {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet);
 
-      // Verifica duplicados
       const existingCodes = new Set(apontamentos.map((item) => item.codigo));
       const newCodes = json.map((row) => row.Apontamento);
 
@@ -75,8 +85,6 @@ export default function Apontamentos() {
         return;
       }
 
-      const today = new Date().toLocaleDateString("pt-BR");
-
       const newItems = json.map((row, index) => ({
         id: apontamentos.length + index + 1,
         entregador: "",
@@ -84,8 +92,8 @@ export default function Apontamentos() {
         tipo: row.Apresentante || "",
         codigo: row.Apontamento || "",
         status: "Pendente",
-        obs: "-",
-        coleta: today,
+        obs: "",
+        coleta: todayISO(), // data do carimbo
         dataEF: "",
         devNotis: "",
         dev2Tab: file.name,
@@ -104,14 +112,14 @@ export default function Apontamentos() {
       <div className="pt-20 px-4">
         {/* Upload */}
         <div className="mb-6">
-          <label className="font-semibold block mb-1 dark:text-white">
+          <label className="font-semibold block mb-1">
             📁 Importar planilha
           </label>
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
             onChange={handleFileUpload}
-            className="border p-2 rounded w-full cursor-pointer dark:text-white"
+            className="border p-2 rounded w-full cursor-pointer"
           />
         </div>
 
@@ -151,14 +159,11 @@ export default function Apontamentos() {
                   "Status",
                   "Obs",
                   "Coleta",
-                  "Prazo",
+                  "EF/VT",
                   "Dev Notis",
                   "Planilha",
                 ].map((title, i) => (
-                  <th
-                    key={i}
-                    className="border px-3 py-2 text-left font-semibold"
-                  >
+                  <th key={i} className="border px-3 py-2">
                     {title}
                   </th>
                 ))}
@@ -172,7 +177,7 @@ export default function Apontamentos() {
                     <select
                       value={item.entregador}
                       onChange={(e) =>
-                        handleEntregador(item.id, e.target.value)
+                        handleChange(item.id, "entregador", e.target.value)
                       }
                       className="border rounded p-1 text-sm"
                     >
@@ -185,14 +190,16 @@ export default function Apontamentos() {
 
                   <td className="border px-2">{item.bairro}</td>
                   <td className="border px-2">{item.tipo}</td>
-                  <td className="border px-2 font-semibold text-center">
+                  <td className="border px-2 text-center font-semibold">
                     {item.codigo}
                   </td>
 
                   <td className="border px-2">
                     <select
                       value={item.status}
-                      onChange={(e) => updateStatus(item.id, e.target.value)}
+                      onChange={(e) =>
+                        updateStatus(item.id, e.target.value)
+                      }
                       className="border rounded p-1 text-sm"
                     >
                       <option>Pendente</option>
@@ -202,10 +209,34 @@ export default function Apontamentos() {
                     </select>
                   </td>
 
-                  <td className="border px-2">{item.obs}</td>
+                  <td className="border px-2">
+                    <input
+                      type="text"
+                      value={item.obs}
+                      onChange={(e) =>
+                        handleChange(item.id, "obs", e.target.value)
+                      }
+                      className="border rounded p-1 text-sm w-full"
+                    />
+                  </td>
+
                   <td className="border px-2">{item.coleta}</td>
-                  <td className="border px-2">{item.dataEF}</td>
-                  <td className="border px-2">{item.devNotis}</td>
+
+                  <td className="border px-2">
+                    <input
+                      type="date"
+                      value={item.dataEF}
+                      onChange={(e) =>
+                        handleChange(item.id, "dataEF", e.target.value)
+                      }
+                      className="border rounded p-1 text-sm"
+                    />
+                  </td>
+
+                  <td className="border px-2">
+                    {item.devNotis || "-"}
+                  </td>
+
                   <td className="border px-2">{item.dev2Tab}</td>
                 </tr>
               ))}

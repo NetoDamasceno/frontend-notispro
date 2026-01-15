@@ -69,13 +69,27 @@ export default function Navbar({ title = "Página" }) {
 
           {perfilOpen && (
             <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 overflow-hidden">
+              {/* ⚙️ CONFIGURAÇÕES DA CONTA */}
+              <button
+                onClick={() => {
+                  setPerfilOpen(false);
+                  navigate("/configuracoes");
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm 
+              hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              >
+                <Settings size={16} />
+                <span className="font-medium">Configurações da conta</span>
+              </button>
+
+              {/* 🔴 SAIR DA CONTA */}
               <button
                 onClick={() => {
                   setPerfilOpen(false);
                   setMostrarModalSair(true);
                 }}
                 className="w-full flex items-center gap-2 px-4 py-2 text-sm 
-                hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 <LogOut size={16} className="text-red-600" />
                 <span className="text-red-600 font-medium">Sair da conta</span>
@@ -133,9 +147,9 @@ export default function Navbar({ title = "Página" }) {
               </li>
               <li
                 className="cursor-pointer hover:underline"
-                onClick={() => goTo("/entregador")}
+                onClick={() => goTo("/usuarios")}
               >
-                Entregador
+                Usuários
               </li>
               <li
                 className="cursor-pointer hover:underline"
@@ -158,7 +172,11 @@ export default function Navbar({ title = "Página" }) {
               >
                 Dashboard
               </li>
-              <li>Atividades</li>
+              <li className="cursor-pointer hover:underline text-black dark:text-gray-200"
+                  onClick={() => goTo("/relatorios")}
+              >
+                Relatórios
+              </li>
               <li>Planejamento</li>
               <li>Documentos</li>
             </ul>

@@ -3,8 +3,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ImportarPlanilhas from "./pages/ImportarPlanilhas";
 import Apontamentos from "./pages/Apontamentos";
-import Entregador from "./pages/Entregador";
+import Usuarios from "./pages/Usuarios";
 import Configuracoes from "./pages/Config";
+import Relatorios from "./pages/Relatorios";
 
 export default function App() {
   return (
@@ -13,8 +14,9 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/importar-planilhas" element={<ImportarPlanilhas />} />
       <Route path="/apontamentos" element={<Apontamentos />} />
-      <Route path="/entregador" element={<Entregador />}/>
+      <Route path="/usuarios" element={<Usuarios />}/>
       <Route path="/configuracoes" element={<Configuracoes />} />
+      <Route path="/relatorios" element={<Relatorios />} />
     </Routes>
   );
 }
