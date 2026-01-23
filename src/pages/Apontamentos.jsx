@@ -112,14 +112,14 @@ export default function Apontamentos() {
       <div className="pt-20 px-4">
         {/* Upload */}
         <div className="mb-6">
-          <label className="font-semibold block mb-1">
+          <label className="font-semibold block mb-1 dark:text-white">
             📁 Importar planilha
           </label>
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
             onChange={handleFileUpload}
-            className="border p-2 rounded w-full cursor-pointer"
+            className="border p-2 rounded w-full cursor-pointer dark:bg-gray-800 dark:text-white"
           />
         </div>
 
@@ -134,13 +134,13 @@ export default function Apontamentos() {
           />
           <button
             onClick={applyFilter}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
           >
             Filtrar
           </button>
           <button
             onClick={clearFilter}
-            className="bg-gray-400 text-white px-4 py-2 rounded"
+            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition"
           >
             Limpar
           </button>
